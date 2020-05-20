@@ -1,7 +1,31 @@
 <template>
   <v-app>
-    <Navbar :laps="laps" />    
+    <Navbar :laps="laps" />
     <v-content>
+      <div class="flex fl-x--reverse fixed--top-right">
+        <v-text-field
+          dark
+          label="Notif time in second"
+          v-model="notifTime.spacing"
+          hide-details            
+          type="number"
+          :rules="[notifTime.spacing > 1 && notifTime.spacing <= 3600]"
+          style="max-width: 120px; min-width: 100px;"
+        />        
+        <v-switch
+          v-model="notifTime.loop"
+          append-icon="mdi-alarm"
+          color="primary"
+          :value="false"
+          hide-details
+        ></v-switch>
+        <v-btn 
+          @click="stopSound" 
+          fab
+        >
+          <v-icon>mdi-alarm-off</v-icon>
+        </v-btn>
+      </div>
       <Timer 
         :timer="formattedTime"
         :state="timerState"
@@ -48,6 +72,7 @@ export default {
   },
 
   data: () => ({
+    publicPath: process.env.BASE_URL,
     timerState: 'stopped',
     currentTimer: 0,
     pausedtime: 0,
@@ -55,8 +80,17 @@ export default {
     ticker: undefined,
     laps: [],
     latestlap: '',
-    snackbar: false    
+    snackbar: false,
+    notifTime: {
+      spacing: 10,
+      duration: 3,
+      loop: false
+    },
+    audio: null
   }),
+  mounted() {
+    this.audio = new Audio(`${this.publicPath}alarm.mp3`);
+  },
   methods: {
     start: function() {
       if (this.timerState !== 'running') {
@@ -75,6 +109,16 @@ export default {
     },
     tick() {
       this.ticker = setInterval(() => {
+        // Play a sound when current timer's time is equal to <notifTime.spacing:int>
+        if (this.notifTime.spacing > 0 && (this.currentTimer % this.notifTime.spacing == 0) && this.currentTimer > 0)
+        {
+          if (this.notifTime.loop) {
+            this.playSound(this.notifTime.duration);
+          } else {
+            this.playSound(10);
+          }
+          
+        }
         this.currentTimer ++;
         this.formattedTime = this.formatTime(this.currentTimer);
       }, 1000);
@@ -92,11 +136,13 @@ export default {
         this.formattedTime = this.formatTime(this.currentTimer);
         if (this.currentTimer == 0) {
           this.stop();
+          this.playSound(5)          
         }
       }, 1000);
       }      
     },
     formatTime (seconds) {
+      // Format to h:m:s time
       let measuredTime = new Date(null);
       measuredTime.setSeconds(seconds);
       let MHSTime = measuredTime.toISOString().substr(11, 8);
@@ -106,14 +152,51 @@ export default {
       window.clearInterval(this.ticker);
       this.timerState = 'paused';
       this.pausedtime = this.currentTimer;
+      this.stopSound()
     },
     stop () {
       window.clearInterval(this.ticker);
       this.currentTimer = 0;
       this.formattedTime = '00:00:00';
       this.timerState = 'stopped';
+      this.stopSound()
+    },
+    playSound(duration = -1) {
+      if (duration > 0) {
+        this.audio.play();
+        setTimeout(() => {
+            this.stopSound()
+          }, duration * 1000)
+      } else {
+        this.audio.play();
+      }      
+    },
+    stopSound() {      
+      this.audio.pause();
     }
 
   }
 };
 </script>
+<style scoped>
+  .fixed--top-right {
+    position: absolute;
+    top: 5%; right: 2%;
+    z-index: 200;    
+  }
+  .flex {
+    display: flex;
+  }
+  .fl-x {    
+    flex-direction: row;
+  }
+  .fl-x--reverse {    
+    flex-direction: row-reverse;
+  }
+  .fl-y {    
+    flex-direction: column;
+  }
+  .fl-y--reverse {    
+    flex-direction: column-reverse;
+  }
+</style>

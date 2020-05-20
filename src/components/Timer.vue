@@ -72,7 +72,7 @@
                 class="success mb-3"
                 @click="$emit('start')"
               >
-                <span class="white--text font-weight-bold text-uppercase pl-5">Start</span>
+                <v-icon>mdi-play</v-icon>                
               </v-list-item-content>
 
               <v-list-item-content 
@@ -80,7 +80,7 @@
                 @click="$emit('lap')"
                 :disabled="state == 'stopped' || state == 'paused'"
               >
-                <span class="white--text font-weight-bold text-uppercase pl-5">Lap</span>
+                <v-icon>mdi-flag</v-icon>
               </v-list-item-content>
 
               <v-list-item-content 
@@ -88,7 +88,7 @@
                 @click="$emit('pause')"
                 :disabled="state == 'stopped' || state == 'paused'"
               >
-                <span class="white--text font-weight-bold text-uppercase pl-5">Pause</span>
+                <v-icon>mdi-pause</v-icon>
               </v-list-item-content>
 
               <v-list-item-content 
@@ -96,7 +96,7 @@
                @click="$emit('stop')"
                :disabled="state == 'stopped'"
                >
-                <span class="white--text font-weight-bold text-uppercase pl-5">Stop</span>
+                <v-icon>mdi-stop</v-icon>
               </v-list-item-content>
             </v-list>
           </v-card-text>
