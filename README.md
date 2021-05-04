@@ -1,5 +1,8 @@
 # timer
 
+## Description
+Timer single page application. We can start a counter, pause it and stop it. Laps can be also captured.
+
 ## Project setup
 ```
 npm install
