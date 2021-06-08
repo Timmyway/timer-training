@@ -1,15 +1,15 @@
 <template>
   <nav class="navbar">
-      <v-app-bar app dark class="secondary">
+      <v-app-bar app>
           <v-app-bar-nav-icon @click="isDrawerOpen = !isDrawerOpen" />
           <v-toolbar-title class="headline text-uppercase">
-              <span class="font-weight-black primary--text">Tim Joffre</span>
-              <span class="font-weight-light">Timer</span>
+              <span class="font-weight-light">Timer by</span>
+              <span class="font-weight-black primary--text"> Timmy Way</span>              
           </v-toolbar-title>
       </v-app-bar>
 
-      <v-navigation-drawer app dark v-model="isDrawerOpen">
-          <v-toolbar class="secondary">
+      <v-navigation-drawer app v-model="isDrawerOpen">
+          <v-toolbar>
               <v-toolbar-title class="title">Laps</v-toolbar-title>
               <v-list></v-list>
           </v-toolbar>
@@ -34,5 +34,5 @@ export default {
 }
 </script>
 
-<style>   
+<style> 
 </style>

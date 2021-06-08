@@ -1,10 +1,10 @@
 <template>
   <v-container fluid>
     <v-layout>
-      <v-flex xs12 pa-3>
+      <v-flex xs12>
         <v-card>
-          <v-card-title class="secondary white--text font-weight-light display-4 text-uppercase justify-center">
-            {{ timer }}
+          <v-card-title>
+            <p class="time-display">{{ timer }}</p>
           </v-card-title>
 
           <v-card-subtitle>
@@ -18,22 +18,23 @@
           </v-card-subtitle>
                     
           <v-card-text v-if="countdownMode">
-            <v-layout row>
+            <v-layout row style="max-width: 280px" class="pa-4">
               <!-- Maximum value allowed for countdown -->
               <v-flex xs12 sm6>
                 <v-text-field
-                  label="Max value (max 86399sec)"
+                  label="MAX (max 86399sec)"
                   v-model="countdownValueMax"
                   hide-details
                   type="number"
                   :rules="[countdownValueMax > 0 && countdownValueMax < 86400]"
-                  style="max-width: 160px; min-width: 100px;"
+                  style="max-width: 120px; min-width: 100px;"
                 />
               </v-flex>
+
               <!-- Step value for countdown slider -->
               <v-flex xs12 sm6>
                 <v-text-field
-                  label="Step (max 3600sec)"
+                  label="STEP (max 3600sec)"
                   v-model="countdownValueStep"
                   hide-details                  
                   type="number"
@@ -41,27 +42,26 @@
                   style="max-width: 120px; min-width: 100px;"
                 />                
               </v-flex>
+              </v-layout>
+
               <!-- Slider that let selecting countdown time -->
-              <v-flex xs8>
+              <div class="d-flex">                
                 <v-slider              
-                  label="Countdown"              
+                  label="Time"
                   :min="countdownValueMin"
                   :max="countdownValueMax"
                   :step="countdownValueStep"
                   v-model="countdownValue"
                 ></v-slider>                  
-              </v-flex>
-              <v-flex xs4>
-                {{ formatTime(countdownValue) }}                
-              </v-flex>
-            </v-layout>
+                {{ formatTime(countdownValue) }}
+              </div>            
           </v-card-text>
 
           <v-card-text>
-            <v-list>
+            <v-list class="control">
               <v-list-item-content 
                 v-if="countdownMode"
-                class="success mb-3"
+                class="success mb-3 btn-control"
                 @click="$emit('countdown', countdownValue)"
               >
                 <span class="white--text font-weight-bold text-uppercase pl-5">Countdown</span>
@@ -69,34 +69,34 @@
 
               <v-list-item-content 
                 v-if="! countdownMode"
-                class="success mb-3"
+                class="success btn-control"
                 @click="$emit('start')"
               >
-                <v-icon>mdi-play</v-icon>                
+                <v-icon x-large>mdi-play</v-icon>                
               </v-list-item-content>
 
               <v-list-item-content 
-                class="info mb-3"
+                class="info btn-control"
                 @click="$emit('lap')"
                 :disabled="state == 'stopped' || state == 'paused'"
               >
-                <v-icon>mdi-flag</v-icon>
+                <v-icon x-large>mdi-flag</v-icon>
               </v-list-item-content>
 
               <v-list-item-content 
-                class="warning mb-3"
+                class="warning btn-control"
                 @click="$emit('pause')"
                 :disabled="state == 'stopped' || state == 'paused'"
               >
-                <v-icon>mdi-pause</v-icon>
+                <v-icon x-large>mdi-pause</v-icon>
               </v-list-item-content>
 
               <v-list-item-content 
-               class="error mb-3"
+               class="error btn-control"
                @click="$emit('stop')"
                :disabled="state == 'stopped'"
                >
-                <v-icon>mdi-stop</v-icon>
+                <v-icon x-large>mdi-stop</v-icon>
               </v-list-item-content>
             </v-list>
           </v-card-text>
@@ -119,3 +119,49 @@
     })    
   }
 </script>
+
+<style scoped>
+  .time-display {  
+    min-width: 280px;
+    font-weight: 500;
+    font-size: 7rem;
+    text-transform: uppercase;
+    text-align: center;
+    border: 3px solid #E4FF1A;
+    border-radius: 4px;   
+    padding: 0rem 1rem;
+    line-height: 1;
+    margin: auto;
+  }
+
+  .v-list-item__content {
+    cursor: pointer;
+  }
+
+  .control {
+    display: flex;    
+    justify-content: center;
+    flex-direction: column;    
+  }
+
+  .btn-control {
+    padding: 2rem;
+    width: 100%;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  @media screen and (min-width: 768px) {
+    .control {
+      flex-direction: row;
+      max-width: 768px;
+      margin: auto;
+    }
+
+    .btn-control {      
+      min-width: 70px;      
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+    }
+  }
+</style>
